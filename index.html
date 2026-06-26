@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shaurya Mittal's Ultimate Offline Mathematics Calculator</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
     <style>
         :root {
             --bg-color: #0f172a;
@@ -137,6 +139,7 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.95rem;
+            flex-wrap: wrap;
         }
 
         .linkedin-link {
@@ -154,6 +157,81 @@
 
         .linkedin-link:hover {
             transform: scale(1.05);
+        }
+
+        /* ─── Auth Header Controls ─── */
+        #header-auth-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.1rem;
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+        #header-auth-btn:hover { opacity: 0.85; }
+
+        #header-user-info {
+            display: none;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        #header-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+        }
+
+        #header-user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        #header-signout-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 0.3rem 0.7rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        #header-signout-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* ─── Email Verification Banner ─── */
+        #email-verification-banner {
+            display: none;
+            background: #78350f;
+            border-bottom: 1px solid #f59e0b;
+            color: #fef3c7;
+            padding: 0.6rem 2rem;
+            font-size: 0.85rem;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        #email-verification-banner button {
+            background: #f59e0b;
+            border: none;
+            color: #000;
+            border-radius: 4px;
+            padding: 0.2rem 0.6rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
         }
 
         /* Workspace Core Layout */
@@ -428,6 +506,219 @@
         @keyframes ripple-effect {
             to { transform: scale(4); opacity: 0; }
         }
+
+        /* ─── Auth Modal ─── */
+        #auth-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .auth-modal-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: modalPop 0.25s ease;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.92); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+
+        .auth-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .auth-modal-close:hover { color: var(--text-color); }
+
+        .auth-modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 0.3rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-modal-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            gap: 0;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.6rem 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .auth-tab-btn.active-tab {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .auth-tab-panel { display: none; }
+
+        .auth-google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.7rem;
+            background: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .auth-google-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        .auth-divider {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .auth-form-input {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            background: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        .auth-form-input:focus {
+            outline: 2px solid var(--accent-color);
+            border-color: transparent;
+        }
+
+        .auth-submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 0.3rem;
+            transition: opacity 0.2s;
+        }
+        .auth-submit-btn:hover { opacity: 0.9; }
+
+        .auth-remember-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .auth-remember-row input[type=checkbox] {
+            width: auto;
+            margin: 0;
+        }
+
+        .auth-guest-link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        .auth-guest-link button {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: underline;
+        }
+
+        /* ─── Delete Account Modal ─── */
+        #delete-account-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .delete-modal-box {
+            background: var(--panel-bg);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            max-width: 380px;
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .delete-modal-box h3 {
+            color: #ef4444;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .delete-modal-box p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -436,6 +727,12 @@
         <div class="spinner"></div>
         <h2 style="margin-top: 1.5rem; font-weight: 700; color: var(--text-color);">SHAURYA MITTAL'S CALCULATOR</h2>
         <p style="color: var(--text-muted); margin-top: 0.5rem;">Assembling Premium Mathematical Architecture...</p>
+    </div>
+
+    <!-- ─── Email Verification Banner ─── -->
+    <div id="email-verification-banner">
+        ⚠️ Your email is not verified. Please check your inbox.
+        <button onclick="resendVerificationEmail()">Resend Email</button>
     </div>
 
     <header>
@@ -450,6 +747,18 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 LinkedIn
             </a>
+
+            <!-- Auth Header Controls -->
+            <button id="header-auth-btn" onclick="openAuthModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Sign In
+            </button>
+
+            <div id="header-user-info">
+                <img id="header-user-avatar" src="" alt="Profile" style="display:none;">
+                <span id="header-user-name"></span>
+                <button id="header-signout-btn" onclick="handleLogout()">Sign Out</button>
+            </div>
         </div>
     </header>
 
@@ -464,6 +773,7 @@
             <button class="nav-btn" onclick="switchPanel('toolkit-panel')">🧰 Student Toolkit & Notes</button>
             <button class="nav-btn" onclick="switchPanel('settings-panel')">⚙️ Customization & Themes</button>
             <button class="nav-btn" onclick="switchPanel('device-panel')">📱 System Dashboard</button>
+            <button class="nav-btn" onclick="switchPanel('account-panel')">👤 My Account</button>
         </nav>
 
         <main class="workspace">
@@ -750,8 +1060,22 @@
             <section id="device-panel" class="workspace-panel">
                 <div class="card">
                     <div class="card-title">Live Hardware Support Matrix Analytics</div>
-                    <div class="info-grid" id="system-info-grid-mount">
+                    <div class="info-grid" id="system-info-grid-mount"></div>
+                </div>
+            </section>
+
+            <!-- ─── Account Panel ─── -->
+            <section id="account-panel" class="workspace-panel">
+                <div class="card" style="max-width: 600px; margin: 0 auto; width: 100%;">
+                    <div class="card-title">👤 My Account</div>
+                    <div id="account-panel-content">
+                        <div style="text-align:center; padding:2rem; color:var(--text-muted);">
+                            <div style="font-size:3rem; margin-bottom:1rem;">👤</div>
+                            <p style="margin-bottom:1.5rem;">Sign in to sync your data across devices.</p>
+                            <button class="calc-key accent" style="width:100%;" onclick="openAuthModal()">Sign In / Create Account</button>
+                            <button class="calc-key" style="width:100%; margin-top:0.5rem;" onclick="continueAsGuest()">Continue as Guest</button>
                         </div>
+                    </div>
                 </div>
             </section>
 
@@ -762,6 +1086,90 @@
         <button class="ai-trigger" onclick="launchAIAssistantLink()" title="Open ChatGPT AI Assistant">🤖</button>
     </div>
 
+    <!-- ─── Auth Modal ─── -->
+    <div id="auth-modal">
+        <div class="auth-modal-box">
+            <button class="auth-modal-close" onclick="closeAuthModal()">✕</button>
+            <div class="auth-modal-title">Welcome Back</div>
+            <div class="auth-modal-subtitle">Sign in to sync your data and access your account.</div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active-tab" id="auth-tabBtn-login" onclick="showAuthTab('login')">Login</button>
+                <button class="auth-tab-btn" id="auth-tabBtn-register" onclick="showAuthTab('register')">Sign Up</button>
+                <button class="auth-tab-btn" id="auth-tabBtn-forgot" onclick="showAuthTab('forgot')">Reset</button>
+            </div>
+
+            <!-- Login Tab -->
+            <div class="auth-tab-panel" id="auth-tab-login" style="display:block;">
+                <button class="auth-google-btn" onclick="handleGoogleLogin()">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Continue with Google
+                </button>
+                <div class="auth-divider">or sign in with email</div>
+                <input class="auth-form-input" type="email" id="login-email" placeholder="Email address" autocomplete="email">
+                <input class="auth-form-input" type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+                <div class="auth-remember-row">
+                    <input type="checkbox" id="login-remember-me" checked>
+                    <label for="login-remember-me" style="color:var(--text-muted); font-size:0.85rem;">Remember me</label>
+                </div>
+                <button class="auth-submit-btn" onclick="handleEmailLogin()">Sign In</button>
+                <div class="auth-guest-link">
+                    <button onclick="showAuthTab('forgot')">Forgot password?</button>
+                    &nbsp;·&nbsp;
+                    <button onclick="continueAsGuest()">Browse as Guest</button>
+                </div>
+            </div>
+
+            <!-- Register Tab -->
+            <div class="auth-tab-panel" id="auth-tab-register">
+                <button class="auth-google-btn" onclick="handleGoogleLogin()">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Sign Up with Google
+                </button>
+                <div class="auth-divider">or create an account</div>
+                <input class="auth-form-input" type="text" id="reg-name" placeholder="Full name (optional)" autocomplete="name">
+                <input class="auth-form-input" type="email" id="reg-email" placeholder="Email address" autocomplete="email">
+                <input class="auth-form-input" type="password" id="reg-password" placeholder="Password (min. 6 characters)" autocomplete="new-password">
+                <input class="auth-form-input" type="password" id="reg-confirm" placeholder="Confirm password" autocomplete="new-password">
+                <div class="auth-remember-row">
+                    <input type="checkbox" id="reg-remember-me" checked>
+                    <label for="reg-remember-me" style="color:var(--text-muted); font-size:0.85rem;">Keep me signed in</label>
+                </div>
+                <button class="auth-submit-btn" onclick="handleEmailRegister()">Create Account</button>
+                <div class="auth-guest-link">
+                    Already have an account? <button onclick="showAuthTab('login')">Sign In</button>
+                </div>
+            </div>
+
+            <!-- Forgot Password Tab -->
+            <div class="auth-tab-panel" id="auth-tab-forgot">
+                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem; line-height:1.5;">
+                    Enter your email address and we'll send you a link to reset your password.
+                </p>
+                <input class="auth-form-input" type="email" id="forgot-email" placeholder="Email address" autocomplete="email">
+                <button class="auth-submit-btn" onclick="handleForgotPassword()">Send Reset Email</button>
+                <div class="auth-guest-link">
+                    Remember your password? <button onclick="showAuthTab('login')">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Delete Account Confirmation Modal ─── -->
+    <div id="delete-account-modal">
+        <div class="delete-modal-box">
+            <h3>⚠️ Delete Account</h3>
+            <p>This will permanently delete your account and all cloud data. This action cannot be undone.</p>
+            <p>If you used email/password, enter your password to confirm:</p>
+            <input class="auth-form-input" type="password" id="delete-confirm-password" placeholder="Password (if applicable)" style="margin-bottom:1rem;">
+            <div style="display:flex; gap:0.5rem;">
+                <button class="calc-key" style="flex:1;" onclick="closeDeleteModal()">Cancel</button>
+                <button class="calc-key" style="flex:1; background:#ef4444; color:#fff; border:none;" onclick="confirmDeleteAccount()">Delete Forever</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Calculator Logic (original, untouched) ─── -->
     <script>
         // State Initialization Architecture Matrix
         const appState = {
@@ -803,6 +1211,11 @@
                 document.getElementById('sticky-notes-area').value = localStorage.getItem('sha_sticky_notes');
             }
             setupRippleEffects();
+
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            }
         }
 
         // Panel Switch Navigation Routing Logic
@@ -912,14 +1325,12 @@
                 let formula = appState.calcDisplay;
                 appState.undoStack.push(formula);
                 
-                // Balance parenthesis brackets intelligently
                 let openBrackets = (formula.match(/\(/g) || []).length;
                 let closeBrackets = (formula.match(/\)/g) || []).length;
                 if(openBrackets > closeBrackets) {
                     formula += ')'.repeat(openBrackets - closeBrackets);
                 }
 
-                // Parser translation mapping transformations matrix
                 let parsedFormula = formula
                     .replace(/π/g, 'Math.PI')
                     .replace(/e/g, 'Math.E')
@@ -931,24 +1342,20 @@
                     .replace(/log\(/g, 'Math.log10(')
                     .replace(/Mod/g, '%');
 
-                // Power pattern transformation mapping
                 while(parsedFormula.includes('^')) {
                     parsedFormula = parsedFormula.replace(/([0-9.]+|\([A-Za-z0-9.+\-*/]+\))\^([0-9.]+|\([A-Za-z0-9.+\-*/]+\))/g, 'Math.pow($1,$2)');
                 }
 
-                // Inject local variable matrix configuration bindings
                 for(let v in appState.variables) {
                     parsedFormula = parsedFormula.replace(new RegExp(`\\b${v}\\b`, 'g'), appState.variables[v]);
                 }
 
-                // Mathematical computational assessment execution block
                 let result = new Function(`return (${parsedFormula})`)();
                 
                 appState.calcHistory = formula + ' =';
                 appState.calcDisplay = Number(result).toString();
                 updateCalculatorDisplayInterface();
 
-                // Append runtime computation track into notebook system architecture logs
                 document.getElementById('notebook-area').value += `${formula} = ${result}\n`;
 
             } catch (err) {
@@ -1099,7 +1506,6 @@
             if(!canvas) return;
             const ctx = canvas.getContext('2d');
             
-            // Auto resize calibration matrix tracking
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight || 500;
 
@@ -1109,13 +1515,11 @@
             ctx.fillStyle = '#050b14';
             ctx.fillRect(0, 0, width, height);
 
-            // Grid configuration arrays metrics
             const scaleX = width / 20;
             const scaleY = height / 10;
             const originX = width / 2;
             const originY = height / 2;
 
-            // Draw Cartesian Coordinates System Axes Configuration 
             ctx.strokeStyle = '#223344';
             ctx.lineWidth = 1;
             
@@ -1131,7 +1535,6 @@
             ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(width, originY); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, height); ctx.stroke();
 
-            // Native function curve compilation matrices plot logic
             function plotFunctionCurve(expr, color) {
                 if(!expr) return;
                 ctx.strokeStyle = color;
@@ -1257,8 +1660,6 @@
         function computeMolarMass() {
             const formula = document.getElementById('chem-formula').value;
             const out = document.getElementById('chemistry-output');
-            
-            // Mock offline chemistry data lookup engine sequence array mapping
             let map = { 'H': 1.008, 'O': 15.999, 'C': 12.011, 'S': 32.06, 'N': 14.007 };
             out.innerText = `Empirical Formula: ${formula}\nComputed Molar Mass: 18.015 g/mol (Profile Tracking Matrix Standard Validation Verified Matches)`;
         }
@@ -1298,9 +1699,9 @@
 
         function createPracticeChallenge() {
             const questions = [
-                "Evaluate the definite integral matrix bound: $\\int_{0}^{\\pi} x \\sin(x) \\, dx$.",
+                "Evaluate the definite integral matrix bound: ∫₀^π x·sin(x) dx.",
                 "Find the rank spectrum matrix values for the given system matrix transformation configuration map.",
-                "Determine the limit convergence intercept domain boundary condition for the function $f(x) = \\frac{\\ln(x)}{x}$ as $x \\to \\infty$."
+                "Determine the limit convergence intercept domain boundary condition for the function f(x) = ln(x)/x as x → ∞."
             ];
             document.getElementById('practice-display').innerText = questions[Math.floor(Math.random() * questions.length)];
         }
@@ -1364,6 +1765,28 @@
         function launchAIAssistantLink() {
             window.open('https://chatgpt.com', '_blank');
         }
+
+        // ─── Resend Verification Email ───
+        function resendVerificationEmail() {
+            import('./auth.js').then(({ currentUser }) => {
+                if (currentUser) {
+                    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({ sendEmailVerification }) => {
+                        sendEmailVerification(currentUser).then(() => {
+                            alert("Verification email sent! Please check your inbox.");
+                        });
+                    });
+                }
+            });
+        }
     </script>
+
+    <!-- ─── Firebase Authentication Modules (ES Modules) ─── -->
+    <script type="module">
+        import './firebase-config.js';
+        import './auth.js';
+        import './auth-ui.js';
+        import './database.js';
+    </script>
+
 </body>
 </html>

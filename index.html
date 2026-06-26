@@ -5,7 +5,7 @@ DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shaurya Mittal's Ultimate Offline Mathematics Calculator</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#3b82f6"
     <style>
         :root {
             --bg-color: #0f172a;
@@ -723,17 +723,20 @@ DOCTYPE html>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="spinner"></div>
-        <h2 style="margin-top: 1.5rem; font-weight: 700; color: var(--text-color);">SHAURYA MITTAL'S CALCULATOR</h2>
-        <p style="color: var(--text-muted); margin-top: 0.5rem;">Assembling Premium Mathematical Architecture...</p>
-    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey:            "YOUR_API_KEY",
+            authDomain:        "YOUR_AUTH_DOMAIN",
+            projectId:         "YOUR_PROJECT_ID",
+            storageBucket:     "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId:             "YOUR_APP_ID"
+        };
+        
+        // You can initialize Firebase here
+    </script>
 
-    <!-- ─── Email Verification Banner ─── -->
-    <div id="email-verification-banner">
-        ⚠️ Your email is not verified. Please check your inbox.
-        <button onclick="resendVerificationEmail()">Resend Email</button>
-    </div>
+```
 
     <header>
         <div class="header-brand">

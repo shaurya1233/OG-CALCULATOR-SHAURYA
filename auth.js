@@ -7,7 +7,6 @@ import {
     signOut,
     sendEmailVerification,
     sendPasswordResetEmail,
-    onAuthStateChanged,
     deleteUser,
     setPersistence,
     browserLocalPersistence,
@@ -16,35 +15,18 @@ import {
     EmailAuthProvider,
     reauthenticateWithCredential
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { syncUserDataToCloud, loadUserDataFromCloud } from "./database.js";
-import { updateAuthUI, showToast } from "./auth-ui.js";
 
 const googleProvider = new GoogleAuthProvider();
-
-export let currentUser = null;
-
-onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    updateAuthUI(user);
-    if (user) {
-        await loadUserDataFromCloud(user.uid);
-        showToast(user.isAnonymous ? "Browsing as Guest" : `Welcome, ${user.displayName || user.email}!`, "success");
-    }
-});
 
 export async function registerWithEmail(email, password, displayName, rememberMe) {
     try {
         await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
         const result = await createUserWithEmailAndPassword(auth, email, password);
-        if (displayName) {
-            await updateProfile(result.user, { displayName });
-        }
+        if (displayName) await updateProfile(result.user, { displayName });
         await sendEmailVerification(result.user);
-        showToast("Account created! Please check your email to verify your account.", "success");
-        return { success: true, user: result.user };
+        return { success: true, user: result.user, message: "Account created! Please check your email to verify.", type: "success" };
     } catch (error) {
-        showToast(getAuthErrorMessage(error.code), "error");
-        return { success: false, error: error.message };
+        return { success: false, message: getAuthErrorMessage(error.code), type: "error" };
     }
 }
 
@@ -52,11 +34,9 @@ export async function loginWithEmail(email, password, rememberMe) {
     try {
         await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
         const result = await signInWithEmailAndPassword(auth, email, password);
-        showToast(`Welcome back, ${result.user.displayName || result.user.email}!`, "success");
-        return { success: true, user: result.user };
+        return { success: true, user: result.user, message: `Welcome back, ${result.user.displayName || result.user.email}!`, type: "success" };
     } catch (error) {
-        showToast(getAuthErrorMessage(error.code), "error");
-        return { success: false, error: error.message };
+        return { success: false, message: getAuthErrorMessage(error.code), type: "error" };
     }
 }
 
@@ -64,68 +44,66 @@ export async function loginWithGoogle(rememberMe) {
     try {
         await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
         const result = await signInWithPopup(auth, googleProvider);
-        showToast(`Welcome, ${result.user.displayName}!`, "success");
-        return { success: true, user: result.user };
+        return { success: true, user: result.user, message: `Welcome, ${result.user.displayName}!`, type: "success" };
     } catch (error) {
-        showToast(getAuthErrorMessage(error.code), "error");
-        return { success: false, error: error.message };
+        return { success: false, message: getAuthErrorMessage(error.code), type: "error" };
     }
 }
 
 export async function forgotPassword(email) {
     try {
         await sendPasswordResetEmail(auth, email);
-        showToast("Password reset email sent! Please check your inbox.", "success");
-        return { success: true };
+        return { success: true, message: "Password reset email sent! Check your inbox.", type: "success" };
     } catch (error) {
-        showToast(getAuthErrorMessage(error.code), "error");
-        return { success: false, error: error.message };
+        return { success: false, message: getAuthErrorMessage(error.code), type: "error" };
     }
 }
 
 export async function logoutUser() {
     try {
-        if (currentUser && !currentUser.isAnonymous) {
-            await syncUserDataToCloud(currentUser.uid);
-        }
         await signOut(auth);
-        showToast("Signed out successfully.", "info");
-        return { success: true };
+        return { success: true, message: "Signed out successfully.", type: "info" };
     } catch (error) {
-        showToast("Sign out failed. Please try again.", "error");
-        return { success: false, error: error.message };
+        return { success: false, message: "Sign out failed. Please try again.", type: "error" };
     }
 }
 
 export async function deleteUserAccount(password) {
     try {
-        if (!currentUser) return { success: false };
-        if (password) {
-            const credential = EmailAuthProvider.credential(currentUser.email, password);
-            await reauthenticateWithCredential(currentUser, credential);
+        const user = auth.currentUser;
+        if (!user) return { success: false, message: "No user logged in.", type: "error" };
+        if (password && user.email) {
+            const credential = EmailAuthProvider.credential(user.email, password);
+            await reauthenticateWithCredential(user, credential);
         }
-        await deleteUser(currentUser);
-        showToast("Account permanently deleted.", "info");
-        return { success: true };
+        await deleteUser(user);
+        return { success: true, message: "Account permanently deleted.", type: "info" };
     } catch (error) {
-        showToast(getAuthErrorMessage(error.code), "error");
-        return { success: false, error: error.message };
+        return { success: false, message: getAuthErrorMessage(error.code), type: "error" };
     }
 }
 
 export async function updateUserProfile(displayName, photoURL) {
     try {
-        if (!currentUser) return { success: false };
+        const user = auth.currentUser;
+        if (!user) return { success: false, message: "No user logged in.", type: "error" };
         const updates = {};
         if (displayName) updates.displayName = displayName;
         if (photoURL) updates.photoURL = photoURL;
-        await updateProfile(currentUser, updates);
-        updateAuthUI(currentUser);
-        showToast("Profile updated successfully!", "success");
-        return { success: true };
+        await updateProfile(user, updates);
+        return { success: true, message: "Profile updated successfully!", type: "success" };
     } catch (error) {
-        showToast("Profile update failed. Please try again.", "error");
-        return { success: false, error: error.message };
+        return { success: false, message: "Profile update failed.", type: "error" };
+    }
+}
+
+export async function resendVerification() {
+    try {
+        const user = auth.currentUser;
+        if (user) await sendEmailVerification(user);
+        return { success: true, message: "Verification email sent!", type: "success" };
+    } catch (error) {
+        return { success: false, message: "Failed to send verification email.", type: "error" };
     }
 }
 
@@ -138,9 +116,11 @@ function getAuthErrorMessage(code) {
         "auth/wrong-password": "Incorrect password. Please try again.",
         "auth/too-many-requests": "Too many attempts. Please try again later.",
         "auth/popup-closed-by-user": "Google sign-in was cancelled.",
+        "auth/popup-blocked": "Popup was blocked by browser. Please allow popups for this site.",
         "auth/requires-recent-login": "Please re-login to perform this action.",
         "auth/network-request-failed": "Network error. Check your connection.",
-        "auth/invalid-credential": "Invalid credentials. Please try again."
+        "auth/invalid-credential": "Invalid credentials. Please try again.",
+        "auth/cancelled-popup-request": "Sign-in cancelled."
     };
     return messages[code] || "An error occurred. Please try again.";
 }
